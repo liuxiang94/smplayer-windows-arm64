@@ -29,53 +29,25 @@ jobs:
                                   # action you need, `v11` in this case to stay up
                                   # to date with fixes on the v11 branch
         with:
-          vcpkgGitCommitId: 'dd3097e305afa53f7b4312371f62058d2e665320'
+          vcpkgGitCommitId: '9e593bb18ea69cc5095e012465dcd675a822ed0d'
 
       - name: Install dependencies from vcpkg
         run: |
           # clear buildtrees after each package installation to reduce disk space requirements
-          $packages = "zlib:arm64-windows"
+          Add-Content `
+            "${{ env.RUNVCPKG_VCPKG_ROOT }}/triplets/arm64-windows.cmake" `
+            -Value "set(VCPKG_BUILD_TYPE release)"
           ${{ env.RUNVCPKG_VCPKG_ROOT }}/vcpkg.exe upgrade `
             --no-dry-run
           ${{ env.RUNVCPKG_VCPKG_ROOT }}/vcpkg.exe install `
             --clean-after-build `
-            $packages
-
-      - name: Setup devcmd
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: amd64
-
-      - name: Cache Qt
-        id: cache-qt
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.qt_path }}
-          key: ${{ runner.os }}-msvc-qt-${{ env.qt_version }}-arm64
-
-      - name: Install Qt (arm64)
-        if: steps.cache-qt.outputs.cache-hit != 'true'
-        run: |
-          git clone https://github.com/qt/qt5.git qt5
-          cd qt5
-          git checkout "v${{ env.qt_version }}-lts-lgpl"
-          perl init-repository --module-subset=qtbase,qtsvg,qttools,qtimageformats,qttranslations,qtdeclarative
-          ./configure -opensource -confirm-license -nomake tests -nomake examples `
-            -schannel -no-icu -system-zlib -qt-sqlite -sql-sqlite -no-sql-mysql -no-sql-odbc -no-sql-psql `
-            -release -platform win32-msvc -xplatform win32-arm64-msvc2017 -prefix "${{ env.qt_path }}" `
-            ZLIB_PREFIX="${{ env.RUNVCPKG_VCPKG_ROOT }}\installed\arm64-windows"
-          jom
-          jom install
-
-      - name: Setup devcmd
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: amd64_arm64
+            --triplet=arm64-windows --host-triplet=x64-windows-release `
+            --x-buildtrees-root=C:\b
           
       - name: Install Smplayer
         run: |
           $qt_install_dir = "${{ env.qt_path }}"
-          $vcpkg_dir = "${{ env.RUNVCPKG_VCPKG_ROOT }}"
+          $vcpkg_dir = "${{ github.workspace }}\vcpkg_installed"
           ./build.ps1      
 
       - name: Upload build artifacts

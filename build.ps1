@@ -1,27 +1,29 @@
 $ErrorActionPreference = "Stop"
 
-$env:path += ";$qt_install_dir\bin;"
+$env:path += ";$vcpkg_dir\arm64-windows\tools\Qt6\bin;$vcpkg_dir\x64-windows-release\tools\Qt6\bin"
 $work_dir = $pwd
 
 # sources
-$smp_version = '25.6.0'
+$smp_version = '26.8.29'
 git clone --depth 1 https://github.com/smplayer-dev/smplayer-build.git
 cd smplayer-build
 git clone --depth 1 https://github.com/smplayer-dev/smplayer-themes.git packages\smplayer-themes
 git clone --depth 1 https://github.com/smplayer-dev/smplayer-skins.git packages\smplayer-skins
-git clone --depth 1 --branch v$smp_version  https://github.com/smplayer-dev/smplayer.git packages\smplayer-portable
+git clone --depth 1 --branch qt6  https://github.com/smplayer-dev/smplayer.git packages\smplayer-portable
 
 # Compile themes
 .\compile_themes.cmd
 
 # Compile smplayer
 cd packages/smplayer-portable
+& $work_dir\smplayer-build\getversion.cmd
+.\getrev.cmd
 git apply $work_dir/smplayer.pro.patch
 cd webserver
 nmake -f .\Makefile.msc
 cd ../src 
 lrelease smplayer.pro
-qmake "DEFINES += PORTABLE_APP" "CONFIG += release" "QMAKE_CXXFLAGS += -I$vcpkg_dir\installed\arm64-windows\include" "LIBS += -L$vcpkg_dir\installed\arm64-windows\lib"
+qmake6 "DEFINES += PORTABLE_APP" "CONFIG += release" "QMAKE_CXXFLAGS += -I$vcpkg_dir\arm64-windows\include" "LIBS += -L$vcpkg_dir\arm64-windows\lib"
 jom
 
 # Install
