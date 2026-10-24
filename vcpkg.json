@@ -10,7 +10,8 @@
         "widgets",
         "network",
         "openssl",
-        "windeployqt"
+        "windeployqt",
+        "sessionmanager"
       ]
     },
     "qtdeclarative",

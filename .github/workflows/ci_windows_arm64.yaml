@@ -22,7 +22,7 @@ jobs:
 
       - name: Install build tools
         run: |
-          choco install jom 
+          choco install jom svn
 
       - name: Setup a new (or from cache) vcpkg (and does not build any package)
         uses: lukka/run-vcpkg@v11 # Always specify the specific _version_ of the
