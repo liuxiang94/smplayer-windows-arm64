@@ -22,7 +22,7 @@ jobs:
 
       - name: Install build tools
         run: |
-          choco install jom svn
+          choco install jom sliksvn
 
       - name: Setup a new (or from cache) vcpkg (and does not build any package)
         uses: lukka/run-vcpkg@v11 # Always specify the specific _version_ of the
@@ -43,6 +43,8 @@ jobs:
             --clean-after-build `
             --triplet=arm64-windows --host-triplet=x64-windows-release `
             --x-buildtrees-root=C:\b
+          cd "${{ github.workspace }}\vcpkg_installed\arm64-windows\lib"
+          cp z.lib zlib.lib
           
       - name: Install Smplayer
         run: |
