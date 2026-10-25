@@ -38,7 +38,7 @@ cd $output_dir
 cp $smplayer_dir\src\release\smplayer.exe .
 cp $smplayer_dir\*.txt .
 cp $smplayer_dir\webserver\simple_web_server.exe .
-windeployqt --no-angle --no-opengl-sw smplayer.exe
+windeployqt --qtpaths "$vcpkg_dir\arm64-windows\tools\Qt6\bin\qtpaths.bat" --release --no-angle --no-opengl-sw smplayer.exe
 rm vc_redist*.exe
 cp $smplayer_dir\src\translations\*.qm translations
 cp -r $smplayer_dir\src\shortcuts .
