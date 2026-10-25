@@ -17,6 +17,7 @@
     "qtdeclarative",
     "zlib",
     "qttools",
-    "qt5compat"
+    "qt5compat",
+    "qttranslations"
   ]
 }
