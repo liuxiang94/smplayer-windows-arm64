@@ -38,7 +38,6 @@ cd $output_dir
 cp $smplayer_dir\src\release\smplayer.exe .
 cp $smplayer_dir\*.txt .
 cp $smplayer_dir\webserver\simple_web_server.exe .
-cp $vcpkg_dir\installed\arm64-windows\bin\zlib*.dll
 windeployqt --no-angle --no-opengl-sw smplayer.exe
 rm vc_redist*.exe
 cp $smplayer_dir\src\translations\*.qm translations
