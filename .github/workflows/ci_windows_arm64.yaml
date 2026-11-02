@@ -7,9 +7,6 @@ jobs:
   build-windows-arm64:
     name: Build
     runs-on: windows-latest
-    env:
-      qt_version: "5.15.17"
-      qt_path: "${{ github.workspace }}/qt-msvc-arm64"
 
     steps:
       - name: Checkout repository
@@ -50,13 +47,29 @@ jobs:
         run: |
           $qt_install_dir = "${{ env.qt_path }}"
           $vcpkg_dir = "${{ github.workspace }}\vcpkg_installed"
-          ./build.ps1      
+          ./build.ps1  
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: p7zip mingw-w64-ucrt-x86_64-ntldd
+
+      - name: copy dlls in MSYS2
+        shell: msys2 {0}
+        run: |       
+          cd smplayer-portable
+          ntldd -R --search-dir ../vcpkg_installed/arm64-windows/bin smplayer.exe | awk '{print $3}'| grep vcpkg  | sed 's|\\|/|g' | xargs -I{} cp -u {} .
+          cd ..
+          7z a -mx9 texlive-windows-arm64.zip smplayer-portable
+          mkdir upload 
+          mv smplayer-portable upload
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: smplayer_arm64
-          path: smplayer-portable-*.7z
+          path: upload
 
       - name: Batch release
         uses: softprops/action-gh-release@v1
@@ -64,4 +77,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: smplayer-portable-*.7z
+          files: smplayer-portable-*.zip

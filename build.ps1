@@ -40,7 +40,7 @@ cp $smplayer_dir\*.txt .
 cp $smplayer_dir\webserver\simple_web_server.exe .
 windeployqt --qtpaths "$vcpkg_dir\arm64-windows\tools\Qt6\bin\qtpaths.bat" --release --no-opengl-sw smplayer.exe
 rm vc_redist*.exe
-cp $smplayer_dir\src\translations\*.qm translations
+cp $smplayer_dir\src\release\translations\*.qm translations
 cp -r $smplayer_dir\src\shortcuts .
 cp -r $smplayer_dir\docs .
 
@@ -186,5 +186,4 @@ mkdir $output_dir/mpv
 cp mpv/bin/mpv.exe $output_dir/mpv
 cp mpv/bin/vulkan*.dll $output_dir/mpv
 
-7z a -mx9 smplayer-portable-$smp_version-arm64.7z smplayer-portable
-mv smplayer-portable-$smp_version-arm64.7z $work_dir
+mv smplayer-portable $work_dir
